@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lyy Website</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ---------- Root & Global ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
+      color: white;
+      padding-bottom: 90px;
+      transition: background 0.5s, color 0.5s;
+    }
+    body.light-mode {
+      background: radial-gradient(circle at top, #f0f0f0, #ffffff);
+      color: #111;
+    }
+
+    /* ---------- Layout ---------- */
+    .page {
+      display: none;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    #home {
+      display: block;
+    }
+
+    /* ---------- Top-right controls ---------- */
+    .top-right {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      display: flex;
+      gap: 10px;
+      z-index: 9999;
+    }
+    .icon-btn {
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(3px);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(1.05);
+    }
+    body.light-mode .icon-btn {
+      background: rgba(0, 0, 0, 0.08);
+    }
+    body.light-mode .icon-btn:hover {
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    /* ---------- Audio Player ---------- */
+    .audio-container {
+      position: fixed;
+      top: 80px;
+      right: 15px;
+      z-index: 9998;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 10px 15px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s;
+    }
+    body.light-mode .audio-container {
+      background: rgba(0, 0, 0, 0.1);
+      border-color: rgba(0,0,0,0.1);
+    }
+    .audio-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4aaaff, #b966ff);
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    .audio-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(74, 170, 255, 0.4);
+    }
+    .audio-btn.playing {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(74, 170, 255, 0.7); }
+      50% { box-shadow: 0 0 0 10px rgba(74, 170, 255, 0); }
+    }
+    .audio-info {
+      font-size: 12px;
+      max-width: 120px;
+    }
+    .audio-info span {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .song-title {
+      font-weight: bold;
+      color: #4aaaff;
+    }
+    .song-artist {
+      opacity: 0.8;
+      font-size: 11px;
+    }
+
+    /* ---------- Hero Header ---------- */
+    .hero-header {
+      position: relative;
+      width: 90%;
+      max-width: 450px;
+      margin: 90px auto 25px auto;
+      padding: 40px 25px;
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      overflow: hidden;
+    }
+    body.light-mode .hero-header {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Background Circles Animation */
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.5;
+      animation: float 10s infinite ease-in-out;
+    }
+    #circle-1 {
+      width: 150px;
+      height: 150px;
+      background: #4aaaff;
+      top: -50px;
+      left: -50px;
+      animation-delay: 0s;
+    }
+    #circle-2 {
+      width: 120px;
+      height: 120px;
+      background: #b966ff;
+      top: 50%;
+      right: -30px;
+      animation-delay: 2s;
+    }
+    #circle-3 {
+      width: 100px;
+      height: 100px;
+      background: #ff6b6b;
+      bottom: -30px;
+      left: 30%;
+      animation-delay: 4s;
+    }
+    #circle-4 {
+      width: 80px;
+      height: 80px;
+      background: #00c6ff;
+      top: 20%;
+      left: 20%;
+      animation-delay: 6s;
+    }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+    
+    .profile-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      object-fit: cover;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    body.light-mode .profile-photo {
+      border-color: rgba(0, 0, 0, 0.3);
+    }
+    .profile-name-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+      position: relative;
+      z-index: 1;
+    }
+    .profile-name-group h2 {
+      font-size: 28px;
+      background: linear-gradient(90deg, #4aaaff, #b966ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .verified-icon {
+      color: #4aaaff;
+      font-size: 20px;
+    }
+    .profile-bio {
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---------- Cards ---------- */
+    .big-card {
+      width: 90%;
+      max-width: 450px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s;
+    }
+    .big-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    body.light-mode .big-card {
+      background: rgba(0, 0, 0, 0.06);
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+    body.light-mode .big-card:hover {
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .big-title {
+      font-size: 18px;
+      background: linear-gradient(90deg, #4aaaff, #b966ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .big-desc {
+      font-size: 14px;
+      opacity: 0.85;
+      line-height: 1.5;
+    }
+
+    /* ---------- Support Section (Saweria & Donate) ---------- */
+    .support-section {
+      width: 90%;
+      max-width: 450px;
+      margin: 20px auto;
+      padding: 25px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      text-align: center;
+    }
+    body.light-mode .support-section {
+      background: rgba(0,0,0,0.08);
+    }
+    .support-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #4aaaff, #b966ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .support-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .support-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 30px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+    .support-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    .btn-saweria {
+      background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+      color: white;
+    }
+    .btn-saweria:hover {
+      box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+    }
+    .btn-donate {
+      background: linear-gradient(135deg, #4aaaff, #b966ff);
+      color: white;
+    }
+    .btn-donate:hover {
+      box-shadow: 0 10px 25px rgba(74, 170, 255, 0.4);
+    }
+    .support-btn i {
+      font-size: 20px;
+    }
+
+    /* ---------- Request Section ---------- */
+    .request-section {
+      width: 90%;
+      max-width: 450px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      color: #fff;
+    }
+    body.light-mode .request-section {
+      background: rgba(0,0,0,0.08);
+      color: #111;
+    }
+    .request-section h2 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    #requestForm input,
+    #requestForm textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    #requestForm input::placeholder,
+    #requestForm textarea::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+    body.light-mode #requestForm input::placeholder,
+    body.light-mode #requestForm textarea::placeholder {
+      color: rgba(0,0,0,0.5);
+    }
+    body.light-mode #requestForm input,
+    body.light-mode #requestForm textarea {
+      background: rgba(0,0,0,0.15);
+      color: #111;
+    }
+    #requestForm button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg,#00c6ff,#0072ff);
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    #requestForm button:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 20px rgba(0,114,255,0.4);
+    }
+    #requestForm button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+    #status {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+    .status-success {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+      border: 1px solid #4CAF50;
+    }
+    .status-error {
+      background: rgba(244, 67, 54, 0.2);
+      color: #f44336;
+      border: 1px solid #f44336;
+    }
+    .status-loading {
+      background: rgba(33, 150, 243, 0.2);
+      color: #2196F3;
+      border: 1px solid #2196F3;
+    }
+
+    /* ---------- Navbar ---------- */
+    .navbar-bottom {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 70px;
+      background: #0c0c0c;
+      border-top: 1px solid #222;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      transition: background 0.5s, border-color 0.5s;
+      z-index: 999;
+    }
+    body.light-mode .navbar-bottom {
+      background: #e0e0e0;
+      border-color: #ccc;
+    }
+    .navbar-bottom a {
+      color: inherit;
+      text-decoration: none;
+      text-align: center;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 12px;
+      transition: all 0.3s;
+      opacity: 0.7;
+    }
+    .navbar-bottom a i {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    .navbar-bottom a:hover {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+    .navbar-bottom a.active {
+      background: rgba(255, 255, 255, 0.1);
+      opacity: 1;
+    }
+    body.light-mode .navbar-bottom a.active {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* ---------- Animation ---------- */
+    .animate-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: animateIn 0.8s forwards;
+    }
+    @keyframes animateIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- QRIS Float ---------- */
+    .qris-float {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      background: #FF6B6B;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s;
+    }
+    .qris-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    /* ---------- QRIS Overlay ---------- */
+    .qris-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      backdrop-filter: blur(5px);
+    }
+    .qris-box {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 90%;
+      width: 400px;
+      position: relative;
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .qris-box h3 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+    .qris-image-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .qris-box img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 10px;
+      border: 2px solid #eee;
+    }
+    .qris-desc {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .qris-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .qris-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .qris-btn:hover {
+      transform: scale(1.05);
+    }
+    .btn-download {
+      background: #4CAF50;
+      color: white;
+    }
+    .btn-download:hover {
+      background: #45a049;
+      box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+    }
+    .btn-close {
+      background: #f44336;
+      color: white;
+    }
+    .btn-close:hover {
+      background: #da190b;
+      box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+    }
+
+    /* ---------- Toast Notification ---------- */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      padding: 15px 25px;
+      border-radius: 50px;
+      color: white;
+      font-weight: 500;
+      z-index: 10001;
+      transition: transform 0.3s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.8);
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast-success {
+      background: rgba(76, 175, 80, 0.9);
+    }
+    .toast-error {
+      background: rgba(244, 67, 54, 0.9);
+    }
+    .toast-info {
+      background: rgba(33, 150, 243, 0.9);
+    }
+
+    /* ---------- Tools Grid ---------- */
+    .tools-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #4aaaff, #b966ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      padding: 10px;
+      max-width: 450px;
+      margin: 0 auto;
+    }
+    .tool-item {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      padding: 18px 5px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .tool-item:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    body.light-mode .tool-item {
+      background: rgba(0, 0, 0, 0.06);
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+    body.light-mode .tool-item:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    .tool-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .tool-label {
+      font-size: 13px;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 480px) {
+      .audio-container {
+        top: 70px;
+        right: 10px;
+        padding: 8px 12px;
+      }
+      .audio-info {
+        max-width: 80px;
+      }
+      .qris-box {
+        width: calc(100% - 40px);
+        padding: 20px;
+      }
+      .qris-box img {
+        max-width: 240px;
+      }
+      .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .hero-header {
+        margin-top: 70px;
+        padding: 30px 20px;
+      }
+      .profile-photo {
+        width: 100px;
+        height: 100px;
+      }
+      .profile-name-group h2 {
+        font-size: 24px;
+      }
+      .qris-buttons {
+        flex-direction: column;
+      }
+      .qris-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .support-buttons {
+        flex-direction: column;
+      }
+      .support-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Audio Player -->
+  <audio id="audio-player" preload="auto">
+    <source src="https://raw.githubusercontent.com/lyy393/Music/main/sad-music/sad3.mp3" type="audio/mpeg">
+    Browser Anda tidak mendukung pemutar audio.
+  </audio>
+
+  <!-- Audio Controls -->
+  <div class="audio-container">
+    <button class="audio-btn" id="audioBtn" onclick="toggleAudio()">
+      <i class="fas fa-play"></i>
+    </button>
+    <div class="audio-info">
+      <span class="song-title">Lyy Music</span>
+      <span class="song-artist">Now Playing</span>
+    </div>
+  </div>
+
+  <!-- Top-right Controls -->
+  <div class="top-right">
+    <div class="icon-btn" id="theme-btn" title="Toggle Theme">🌙</div>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div class="page" id="home">
+    
+    <!-- Hero Header dengan Background Animasi -->
+    <header class="hero-header" id="top">
+      <div class="bg-circle" id="circle-1"></div>
+      <div class="bg-circle" id="circle-2"></div>
+      <div class="bg-circle" id="circle-3"></div>
+      <div class="bg-circle" id="circle-4"></div>
+      
+      <img src="https://files.catbox.moe/9fmrsz.jpg" alt="Profile Picture" class="profile-photo animate-in">
+      
+      <div class="profile-name-group animate-in">
+        <h2>Lyy Lyy</h2>
+        <i class="fas fa-check-circle verified-icon"></i>
+      </div>
+      
+      <p class="profile-bio animate-in">
+        ✨ "Doa yang tulus tak pernah sia-sia, hanya menunggu waktu terbaik dari Allah."
+      </p>
+    </header>
+
+    <div class="big-card fade-in">
+      <div class="big-title">Program Discussion</div>
+      <div class="big-desc">Membahas ide pengembangan website & project</div>
+    </div>
+
+    <div class="big-card fade-in">
+      <div class="big-title">Innovation Vision</div>
+      <div class="big-desc">Fokus pada project masa depan dan teknologi</div>
+    </div>
+
+    <div class="big-card fade-in">
+      <div class="big-title">Security Management</div>
+      <div class="big-desc">Keamanan data dan pengamanan akses</div>
+    </div>
+
+    <!-- Support Section - Saweria & Donate -->
+    <div class="support-section fade-in">
+      <div class="support-title">💝 Support Lyy</div>
+      <div class="support-buttons">
+        <a href="https://saweria.co/lyy" target="_blank" class="support-btn btn-saweria">
+          <i class="fas fa-coffee"></i>
+          <span>Saweria</span>
+        </a>
+        <a href="https://trakteer.id/lyy" target="_blank" class="support-btn btn-donate">
+          <i class="fas fa-heart"></i>
+          <span>Donate</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- QRIS Float Button -->
+  <div class="qris-float" id="qrisBtn" title="QRIS Payment">
+    <i class="fas fa-qrcode"></i>
+  </div>
+
+  <!-- QRIS Popup -->
+  <div class="qris-overlay" id="qrisOverlay">
+    <div class="qris-box">
+      <h3>📱 Scan QRIS</h3>
+      <div class="qris-image-container">
+        <img id="qrisImage" src="https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=QRIS+Code" alt="QRIS">
+      </div>
+      <p class="qris-desc">Scan untuk melakukan pembayaran atau download QRIS</p>
+      <div class="qris-buttons">
+        <button class="qris-btn btn-download" onclick="downloadQRIS()">
+          <i class="fas fa-download"></i> Download QRIS
+        </button>
+        <button class="qris-btn btn-close" onclick="closeQris()">
+          <i class="fas fa-times"></i> Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Navbar Bottom -->
+  <nav class="navbar-bottom">
+    <a href="#" class="active" onclick="show('home'); return false;">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="#" onclick="show('tools'); return false;">
+      <i class="fas fa-tools"></i>
+      <span>Tools</span>
+    </a>
+    <a href="#" onclick="show('about'); return false;">
+      <i class="fas fa-user"></i>
+      <span>About</span>
+    </a>
+  </nav>
+
+  <script>
+    /* ---------- Audio Player ---------- */
+    const audioPlayer = document.getElementById('audio-player');
+    const audioBtn = document.getElementById('audioBtn');
+    let isPlaying = false;
+
+    function toggleAudio() {
+      if (isPlaying) {
+        audioPlayer.pause();
+        audioBtn.innerHTML = '<i class="fas fa-play"></i>';
+        audioBtn.classList.remove('playing');
+        isPlaying = false;
+      } else {
+        audioPlayer.play().then(() => {
+          audioBtn.innerHTML = '<i class="fas fa-pause"></i>';
+          audioBtn.classList.add('playing');
+          isPlaying = true;
+        }).catch(err => {
+          console.error('Audio play failed:', err);
+          showToast('Gagal memutar audio', 'error');
+        });
+      }
+    }
+
+    // Auto-play saat user interaksi pertama
+    document.addEventListener('click', function initAudio() {
+      if (!isPlaying && audioPlayer.paused) {
+        toggleAudio();
+      }
+      document.removeEventListener('click', initAudio);
+    }, { once: true });
+
+    /* ---------- Page navigation ---------- */
+    function show(page) {
+      document.querySelectorAll(".page").forEach(p => {
+        p.style.display = "none";
+        p.classList.remove('active');
+      });
+      
+      const active = document.getElementById(page);
+      if (active) {
+        active.style.display = "block";
+        active.classList.add('active');
+        
+        active.querySelectorAll(".fade-in").forEach((el, index) => {
+          el.classList.remove('visible');
+          setTimeout(() => {
+            el.classList.add('visible');
+          }, index * 100);
+        });
+      }
+
+      document.querySelectorAll('.navbar-bottom a').forEach(link => {
+        link.classList.remove('active');
+      });
+      
+      const activeLink = document.querySelector(`[onclick="show('${page}')"]`);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
+    }
+
+    /* ---------- Toast Notification ---------- */
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast toast-${type} show`;
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    /* ---------- Theme toggle ---------- */
+    const themeBtn = document.getElementById("theme-btn");
+    themeBtn.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+      const isLight = document.body.classList.contains("light-mode");
+      themeBtn.textContent = isLight ? "☀️" : "🌙";
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-mode');
+      themeBtn.textContent = "☀️";
+    }
+
+    /* ---------- QRIS Popup ---------- */
+    const qrisBtn = document.getElementById("qrisBtn");
+    const qrisOverlay = document.getElementById("qrisOverlay");
+
+    qrisBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      qrisOverlay.style.display = "flex";
+    });
+
+    function closeQris() {
+      qrisOverlay.style.display = "none";
+    }
+
+    /* ---------- Download QRIS ---------- */
+    function downloadQRIS() {
+      const qrisImg = document.getElementById("qrisImage");
+      const imgUrl = qrisImg.src;
+      
+      fetch(imgUrl)
+        .then(response => response.blob())
+        .then(blob => {
+          const blobUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = 'QRIS_Payment_Lyy.png';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(blobUrl);
+          showToast('QRIS berhasil didownload!', 'success');
+        })
+        .catch(error => {
+          console.error('Error downloading QRIS:', error);
+          const link = document.createElement('a');
+          link.href = imgUrl;
+          link.target = '_blank';
+          link.download = 'QRIS_Payment_Lyy.png';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          showToast('Mencoba download...', 'info');
+        });
+    }
+
+    document.addEventListener("click", (e) => {
+      if (e.target === qrisOverlay) {
+        closeQris();
+      }
+    });
+
+    /* ---------- Form Submission ---------- */
+    const TOKEN = "8211011386:AAEeWeXPveAM7M-16X7ulTGvERXQIi_RdJE";
+    const CHAT_ID = "8058947668";
+
+    document.getElementById("requestForm").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const submitBtn = document.getElementById("submitBtn");
+      const status = document.getElementById("status");
+      const name = document.getElementById("name").value.trim();
+      const title = document.getElementById("title").value.trim();
+      const desc = document.getElementById("desc").value.trim();
+
+      if (!name || !title || !desc) {
+        showToast('Mohon isi semua field!', 'error');
+        return;
+      }
+
+      if (desc.length < 10) {
+        showToast('Deskripsi minimal 10 karakter!', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "⏳ Mengirim...";
+      status.className = "status-loading";
+      status.textContent = "Mengirim request ke Telegram...";
+      status.style.display = "block";
+
+      const message = `📩 *REQUEST FITUR BARU*
+👤 Nama: ${name}
+📝 Judul: ${title}
+
+📖 Deskripsi:
+${desc}
+
+⏰ Waktu: ${new Date().toLocaleString('id-ID')}`;
+
+      fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: message,
+          parse_mode: "Markdown"
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          status.className = "status-success";
+          status.textContent = "✅ Request berhasil terkirim ke Telegram!";
+          showToast('Request berhasil dikirim!', 'success');
+          document.getElementById("requestForm").reset();
+        } else {
+          throw new Error(data.description || 'Failed to send message');
+        }
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        status.className = "status-error";
+        status.textContent = "❌ Gagal mengirim request. Coba lagi!";
+        showToast('Gagal mengirim request!', 'error');
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "📩 Kirim ke Telegram";
+        setTimeout(() => {
+          status.style.display = "none";
+        }, 5000);
+      });
+    });
+
+    /* ---------- Form Input Validation ---------- */
+    const inputs = document.querySelectorAll('#requestForm input, #requestForm textarea');
+    inputs.forEach(input => {
+      input.addEventListener('input', function() {
+        if (this.value.trim()) {
+          this.style.border = "2px solid #4CAF50";
+        } else {
+          this.style.border = "none";
+        }
+      });
+    });
+
+    /* ---------- Keyboard Navigation ---------- */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeQris();
+      }
+    });
+
+    /* ---------- Intersection Observer ---------- */
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+      observer.observe(el);
+    });
+
+    /* ---------- Initialize ---------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('#home .fade-in').forEach((el, index) => {
+        setTimeout(() => {
+          el.classList.add('visible');
+        }, index * 150);
+      });
+    });
+
+    /* ---------- Console Welcome ---------- */
+    console.log('%c🚀 Lyy Website', 'font-size: 24px; color: #4aaaff; font-weight: bold;');
+    console.log('%cSelamat datang di website Lyy!', 'font-size: 14px; color: #b966ff;');
+  </script>
+</body>
+</html>
