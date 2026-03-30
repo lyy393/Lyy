@@ -272,7 +272,7 @@
       line-height: 1.5;
     }
 
-    /* ---------- Support Section (Saweria & Donate) ---------- */
+    /* ---------- Support Section ---------- */
     .support-section {
       width: 90%;
       max-width: 450px;
@@ -423,6 +423,72 @@
       background: rgba(33, 150, 243, 0.2);
       color: #2196F3;
       border: 1px solid #2196F3;
+    }
+
+    /* ---------- Tools Menu Section ---------- */
+    .tools-menu-section {
+      width: 90%;
+      max-width: 450px;
+      margin: 20px auto;
+      padding: 25px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+    }
+    body.light-mode .tools-menu-section {
+      background: rgba(0,0,0,0.08);
+    }
+    .tools-menu-title {
+      padding: 0 10px 20px;
+      color: white;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    body.light-mode .tools-menu-title {
+      color: #111;
+      border-bottom-color: rgba(0,0,0,0.1);
+    }
+    .tools-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .tools-menu a {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      color: inherit;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s;
+      font-size: 14px;
+    }
+    .tools-menu a:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateX(5px);
+    }
+    body.light-mode .tools-menu a:hover {
+      background: rgba(0,0,0,0.1);
+    }
+    .tools-menu a i {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #4aaaff, #b966ff);
+      color: white;
+      font-size: 14px;
+    }
+    .tools-menu a.external i {
+      background: linear-gradient(135deg, #FF6B6B, #FF8E53);
     }
 
     /* ---------- Navbar ---------- */
@@ -641,54 +707,6 @@
       background: rgba(33, 150, 243, 0.9);
     }
 
-    /* ---------- Tools Grid ---------- */
-    .tools-title {
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      background: linear-gradient(90deg, #4aaaff, #b966ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      padding: 10px;
-      max-width: 450px;
-      margin: 0 auto;
-    }
-    .tool-item {
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 18px;
-      padding: 18px 5px;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      text-decoration: none;
-      color: inherit;
-      transition: all 0.3s;
-      cursor: pointer;
-    }
-    .tool-item:hover {
-      transform: translateY(-3px);
-      background: rgba(255, 255, 255, 0.1);
-    }
-    body.light-mode .tool-item {
-      background: rgba(0, 0, 0, 0.06);
-      border-color: rgba(0, 0, 0, 0.1);
-    }
-    body.light-mode .tool-item:hover {
-      background: rgba(0, 0, 0, 0.1);
-    }
-    .tool-icon {
-      font-size: 32px;
-      margin-bottom: 8px;
-    }
-    .tool-label {
-      font-size: 13px;
-    }
-
     /* ---------- Responsive ---------- */
     @media (max-width: 480px) {
       .audio-container {
@@ -705,9 +723,6 @@
       }
       .qris-box img {
         max-width: 240px;
-      }
-      .tools-grid {
-        grid-template-columns: repeat(2, 1fr);
       }
       .hero-header {
         margin-top: 70px;
@@ -734,6 +749,9 @@
         width: 100%;
         justify-content: center;
       }
+      .tools-menu-section {
+        padding: 20px 15px;
+      }
     }
   </style>
 </head>
@@ -742,7 +760,7 @@
 
   <!-- Audio Player -->
   <audio id="audio-player" preload="auto">
-    <source src="https://raw.githubusercontent.com/lyy393/Music/main/sad-music/sad3.mp3" type="audio/mpeg">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     Browser Anda tidak mendukung pemutar audio.
   </audio>
 
@@ -765,17 +783,17 @@
   <!-- HOME PAGE -->
   <div class="page" id="home">
     
-    <!-- Hero Header dengan Background Animasi -->
+    <!-- Hero Header -->
     <header class="hero-header" id="top">
       <div class="bg-circle" id="circle-1"></div>
       <div class="bg-circle" id="circle-2"></div>
       <div class="bg-circle" id="circle-3"></div>
       <div class="bg-circle" id="circle-4"></div>
       
-      <img src="https://files.catbox.moe/9fmrsz.jpg" alt="Profile Picture" class="profile-photo animate-in">
+      <img src="https://img2.pixhost.to/images/5699/694381115_upload.jpg" alt="Profile Picture" class="profile-photo animate-in">
       
       <div class="profile-name-group animate-in">
-        <h2>Lyy</h2>
+        <h2>Lyy Lyy</h2>
         <i class="fas fa-check-circle verified-icon"></i>
       </div>
       
@@ -799,24 +817,24 @@
       <div class="big-desc">Keamanan data dan pengamanan akses</div>
     </div>
 
-    <!-- Support Section - Saweria & Donate -->
+    <!-- Support Section -->
     <div class="support-section fade-in">
       <div class="support-title">💝 Support Lyy</div>
       <div class="support-buttons">
-        <a href="https://saweria.co/Lyytzy" target="_blank" class="support-btn btn-saweria">
+        <a href="https://saweria.co/lyy" target="_blank" class="support-btn btn-saweria">
           <i class="fas fa-coffee"></i>
           <span>Saweria</span>
         </a>
-        <a href="https://whatsapp.com/channel/0029Vb7HV2YLY6d4cxyKaP2N" target="_blank" class="support-btn btn-donate">
-          <i class="fab fa-whatsapp"></i>
-          <span>Saluran</span>
+        <a href="https://trakteer.id/lyy" target="_blank" class="support-btn btn-donate">
+          <i class="fas fa-heart"></i>
+          <span>Donate</span>
         </a>
       </div>
     </div>
 
     <!-- Request Section -->
     <div class="request-section fade-in">
-      <h2>Request Fitur</h2>
+      <h2>🚀 Request Fitur</h2>
       <form id="requestForm">
         <input type="text" id="name" placeholder="Nama kamu" required>
         <input type="text" id="title" placeholder="Judul fitur" required>
@@ -832,35 +850,29 @@
     <div class="hero-header" style="margin-top: 80px; padding: 30px;">
       <div class="bg-circle" id="circle-1" style="width: 100px; height: 100px;"></div>
       <div class="bg-circle" id="circle-2" style="width: 80px; height: 80px;"></div>
-      <div class="title" style="position: relative; z-index: 1;">🛠️ Tools</div>
-      <div class="profile-bio" style="position: relative; z-index: 1;">Berbagai tools untuk membantu kebutuhan Anda</div>
+      <div class="title" style="position: relative; z-index: 1; font-size: 24px; font-weight: bold; background: linear-gradient(90deg, #4aaaff, #b966ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🛠️ Lyy Tools</div>
+      <div class="profile-bio" style="position: relative; z-index: 1;">Kumpulan tools dan fitur menarik</div>
     </div>
     
-    <div class="tools-grid">
-      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
-        <div class="tool-icon">🎮</div>
-        <div class="tool-label">Game</div>
+    <!-- Tools Menu Section -->
+    <div class="tools-menu-section fade-in">
+      <div class="tools-menu-title">
+        <i class="fas fa-bars"></i> Lyy Menu
       </div>
-      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
-        <div class="tool-icon">🎮</div>
-        <div class="tool-label">Game</div>
-      </div>
-      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
-        <div class="tool-icon">🎮</div>
-        <div class="tool-label">Game</div>
-      </div>
-      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
-        <div class="tool-icon">🤖</div>
-        <div class="tool-label">Ai</div>
-      </div>
-      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
-        <div class="tool-icon">💖</div>
-        <div class="tool-label">tqto</div>
-      </div>
-      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
-        <div class="tool-icon">🌐</div>
-        <div class="tool-label">IP Lookup</div>
-      </div>
+      <nav class="tools-menu">
+        <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="Lyy/ai.html"><i class="fas fa-robot"></i> Lyy AI</a>
+        <a href="Lyy/tiktok.html"><i class="fab fa-tiktok"></i> TikTok Downloader</a>
+        <a href="Lyy/brat.html"><i class="fas fa-magic"></i> Brat Generator</a>
+        <a href="Lyy/iqc.html"><i class="fab fa-apple"></i> iPhone Quote</a>
+        <a href="Lyy/uploader.html"><i class="fas fa-image"></i> Image To Url</a>
+        <a href="Lyy/nsfw.html"><i class="fas fa-venus"></i> NSFW Random</a>
+        <a href="Lyy/nikparse.html"><i class="fas fa-id-card"></i> NIK Checker</a>
+        <a href="Lyy/anime.html"><i class="fas fa-film"></i> Anime Station</a>
+        <a href="Lyy/nglspam.html"><i class="fas fa-rocket"></i> NGL Spammer</a>
+        <a href="Lyy/tqto.html"><i class="fas fa-heart"></i> Thanks To</a>
+        <a href="#" target="_blank" class="external"><i class="fas fa-external-link-alt"></i> Web Gabut</a>
+      </nav>
     </div>
   </div>
 
@@ -869,24 +881,24 @@
     <div class="hero-header" style="margin-top: 80px;">
       <div class="bg-circle" id="circle-1"></div>
       <div class="bg-circle" id="circle-2"></div>
-      <img src="https://files.catbox.moe/got1mi.jpg" class="profile-photo" alt="Profile" style="position: relative; z-index: 1;">
+      <img src="https://img2.pixhost.to/images/5699/694381115_upload.jpg" class="profile-photo" alt="Profile" style="position: relative; z-index: 1;">
       <div class="profile-name-group" style="position: relative; z-index: 1;">
         <h2>Tentang Lyy</h2>
         <i class="fas fa-check-circle verified-icon"></i>
       </div>
       <p class="profile-bio" style="position: relative; z-index: 1;">Web Developer & Tech Enthusiast</p>
     </div>
-
-        <div class="big-card fade-in">
-      <div class="big-title">Kontak</div>
+    
+    <div class="big-card fade-in">
+      <div class="big-title">📱 Kontak</div>
       <div class="big-desc">
-        <p><i class="fab fa-whatsapp"></i> Whatsapp: 6281917010043</p>
-        <p><i class="fab fa-telegram"></i> Telegram: @Kaguchiii</p>
-        <p><i class="fab fa-github"></i> GitHub: github.com/lyy939</p>
+        <p><i class="fas fa-envelope"></i> Email: contact@lyy.com</p>
+        <p><i class="fab fa-telegram"></i> Telegram: @lyytech</p>
+        <p><i class="fab fa-github"></i> GitHub: github.com/lyy</p>
       </div>
-        </div>
+    </div>
 
-    <!-- Support Section di About Page juga -->
+    <!-- Support Section -->
     <div class="support-section fade-in">
       <div class="support-title">💝 Support Lyy</div>
       <div class="support-buttons">
@@ -894,9 +906,9 @@
           <i class="fas fa-coffee"></i>
           <span>Saweria</span>
         </a>
-        <a href="https://whatsapp.com/channel/0029Vb7HV2YLY6d4cxyKaP2N" target="_blank" class="support-btn btn-donate">
-          <i class="fab fa-whatsapp"></i>
-          <span>Saluran</span>
+        <a href="https://trakteer.id/lyy" target="_blank" class="support-btn btn-donate">
+          <i class="fas fa-heart"></i>
+          <span>Donate</span>
         </a>
       </div>
     </div>
@@ -910,14 +922,14 @@
   <!-- QRIS Popup -->
   <div class="qris-overlay" id="qrisOverlay">
     <div class="qris-box">
-      <h3>Scan Qris</h3>
+      <h3>📱 Scan QRIS</h3>
       <div class="qris-image-container">
-        <img id="qrisImage" src="https://files.catbox.moe/8ptviy.jpg" alt="QRIS">
+        <img id="qrisImage" src="https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=QRIS+Code" alt="QRIS">
       </div>
       <p class="qris-desc">Scan untuk melakukan pembayaran atau download QRIS</p>
       <div class="qris-buttons">
         <button class="qris-btn btn-download" onclick="downloadQRIS()">
-          <i class="fas fa-download"></i> Download Qris
+          <i class="fas fa-download"></i> Download QRIS
         </button>
         <button class="qris-btn btn-close" onclick="closeQris()">
           <i class="fas fa-times"></i> Tutup
@@ -969,7 +981,6 @@
       }
     }
 
-    // Auto-play saat user interaksi pertama
     document.addEventListener('click', function initAudio() {
       if (!isPlaying && audioPlayer.paused) {
         toggleAudio();
