@@ -742,7 +742,7 @@
 
   <!-- Audio Player -->
   <audio id="audio-player" preload="auto">
-    <source src="https://raw.githubusercontent.com/lyy393/Music/main/sad-music/sad3.mp3" type="audio/mpeg">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     Browser Anda tidak mendukung pemutar audio.
   </audio>
 
@@ -772,7 +772,7 @@
       <div class="bg-circle" id="circle-3"></div>
       <div class="bg-circle" id="circle-4"></div>
       
-      <img src="https://files.catbox.moe/9fmrsz.jpg" alt="Profile Picture" class="profile-photo animate-in">
+      <img src="https://img2.pixhost.to/images/5699/694381115_upload.jpg" alt="Profile Picture" class="profile-photo animate-in">
       
       <div class="profile-name-group animate-in">
         <h2>Lyy Lyy</h2>
@@ -800,6 +800,93 @@
     </div>
 
     <!-- Support Section - Saweria & Donate -->
+    <div class="support-section fade-in">
+      <div class="support-title">💝 Support Lyy</div>
+      <div class="support-buttons">
+        <a href="https://saweria.co/lyy" target="_blank" class="support-btn btn-saweria">
+          <i class="fas fa-coffee"></i>
+          <span>Saweria</span>
+        </a>
+        <a href="https://trakteer.id/lyy" target="_blank" class="support-btn btn-donate">
+          <i class="fas fa-heart"></i>
+          <span>Donate</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Request Section -->
+    <div class="request-section fade-in">
+      <h2>🚀 Request Fitur</h2>
+      <form id="requestForm">
+        <input type="text" id="name" placeholder="Nama kamu" required>
+        <input type="text" id="title" placeholder="Judul fitur" required>
+        <textarea id="desc" placeholder="Deskripsi fitur" rows="4" required></textarea>
+        <button type="submit" id="submitBtn">📩 Kirim ke Telegram</button>
+      </form>
+      <div id="status"></div>
+    </div>
+  </div>
+
+  <!-- TOOLS PAGE -->
+  <div class="page" id="tools">
+    <div class="hero-header" style="margin-top: 80px; padding: 30px;">
+      <div class="bg-circle" id="circle-1" style="width: 100px; height: 100px;"></div>
+      <div class="bg-circle" id="circle-2" style="width: 80px; height: 80px;"></div>
+      <div class="title" style="position: relative; z-index: 1;">🛠️ Tools</div>
+      <div class="profile-bio" style="position: relative; z-index: 1;">Berbagai tools untuk membantu kebutuhan Anda</div>
+    </div>
+    
+    <div class="tools-grid">
+      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
+        <div class="tool-icon">🔐</div>
+        <div class="tool-label">Encrypt</div>
+      </div>
+      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
+        <div class="tool-icon">📝</div>
+        <div class="tool-label">Base64</div>
+      </div>
+      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
+        <div class="tool-icon">🎨</div>
+        <div class="tool-label">CSS Minify</div>
+      </div>
+      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
+        <div class="tool-icon">📊</div>
+        <div class="tool-label">JSON Formatter</div>
+      </div>
+      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
+        <div class="tool-icon">🔑</div>
+        <div class="tool-label">Password Gen</div>
+      </div>
+      <div class="tool-item" onclick="showToast('Fitur coming soon!', 'info')">
+        <div class="tool-icon">🌐</div>
+        <div class="tool-label">IP Lookup</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT PAGE -->
+  <div class="page" id="about">
+    <div class="hero-header" style="margin-top: 80px;">
+      <div class="bg-circle" id="circle-1"></div>
+      <div class="bg-circle" id="circle-2"></div>
+      <img src="https://img2.pixhost.to/images/5699/694381115_upload.jpg" class="profile-photo" alt="Profile" style="position: relative; z-index: 1;">
+      <div class="profile-name-group" style="position: relative; z-index: 1;">
+        <h2>Tentang Lyy</h2>
+        <i class="fas fa-check-circle verified-icon"></i>
+      </div>
+      <p class="profile-bio" style="position: relative; z-index: 1;">Web Developer & Tech Enthusiast</p>
+    </div>
+    
+    <div class="big-card fade-in">
+      <div class="big-title">📱 Kontak</div>
+      <div class="big-desc">
+        <p><i class="fas fa-envelope"></i> Email: contact@lyy.com</p>
+        <p><i class="fab fa-telegram"></i> Telegram: @lyytech</p>
+        <p><i class="fab fa-github"></i> GitHub: github.com/lyy</p>
+      </div>
+    </div>
+
+    <!-- Support Section di About Page juga -->
     <div class="support-section fade-in">
       <div class="support-title">💝 Support Lyy</div>
       <div class="support-buttons">
