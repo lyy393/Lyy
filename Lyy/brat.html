@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brat Generator - Ditcii Zephkiel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --bg-color: #f4f7ff;
+            --text-dark: #343a3f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- Navigasi Sidebar --- */
+        .hamburger-menu {
+            position: fixed; top: 15px; left: 15px; z-index: 6000;
+            background: white; width: 45px; height: 45px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .side-nav {
+            position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
+            background: #343a3f; z-index: 5999; transition: 0.4s ease-in-out;
+            padding-top: 80px;
+        }
+
+        .side-nav.active { left: 0; }
+        .side-nav h3 { padding: 0 25px 20px; color: white; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; }
+        .side-nav a {
+            display: flex; align-items: center; gap: 15px; padding: 15px 25px;
+            color: white; text-decoration: none; font-weight: 500; transition: 0.3s;
+        }
+        .side-nav a:hover { background: var(--primary-color); }
+
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; z-index: 5998;
+        }
+        .overlay.active { display: block; }
+
+        /* --- Konten Brat --- */
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            resize: none;
+            font-family: inherit;
+            margin: 20px 0;
+            outline: none;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #resultContainer { margin-top: 20px; display: none; }
+        #resultImg { width: 100%; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 1px solid #ddd; }
+        .loading { display: none; margin: 15px 0; color: var(--primary-color); font-weight: bold; }
+
+        /* Info Tekan Lama */
+        .download-info {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            border: 1px solid #ffeeba;
+        }
+    </style>
+</head>
+<body>
+
+<div class="hamburger-menu" id="hamburgerBtn">
+    <i class="fas fa-bars"></i>
+</div>
+<div class="overlay" id="menuOverlay"></div>
+
+<nav class="side-nav" id="sideNav">
+    <h3>Ditcii Menu</h3>
+    <a href="/index.html"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="/Zephkiel/ai.html"><i class="fas fa-robot"></i> Ditcii AI</a>
+    <a href="/Zephkiel/tiktok.html"><i class="fab fa-tiktok"></i> TikTok Downloader</a>
+    <a href="/Zephkiel/iqc.html"><i class="fab fa-apple"></i> iPhone Quote</a>
+    <a href="/Zephkiel/uploader.html"><i class="fas fa-image"></i> Image To Url</a>
+    <a href="/Zephkiel/nsfw.html"><i class="fas fa-venus"></i> NSFW Random</a>
+    <a href="/Zephkiel/nikparse.html"><i class="fas fa-id-card"></i> NIK Checker</a>
+    <a href="/Zephkiel/anime.html"><i class="fas fa-film"></i> Anime Station</a>
+    <a href="/Zephkiel/nglspam.html"><i class="fas fa-rocket"></i> NGL Spammer</a>
+    <a href="/Zephkiel/tqto.html"><i class="fas fa-heart"></i> Thanks To</a>
+</nav>
+
+<div class="container">
+    <h2><i class="fas fa-magic"></i> Brat Generator</h2>
+    <textarea id="inputText" rows="3" placeholder="Masukkan teks..."></textarea>
+    <button class="btn" id="genBtn" onclick="generateBrat()">Buat Brat</button>
+      
+    <div id="loader" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Memproses...
+    </div>
+
+    <div id="resultContainer">
+        <img id="resultImg" src="" alt="Brat">
+        <div class="download-info">
+            <i class="fas fa-info-circle"></i> <b>Cara Simpan:</b><br>
+            Tekan lama gambar di atas, lalu pilih <b>"Download Gambar"</b> atau <b>"Simpan Gambar"</b>.
+        </div>
+    </div>
+</div>
+
+<script>
+    /* Logic Sidebar */
+    const hb = document.getElementById('hamburgerBtn');
+    const sn = document.getElementById('sideNav');
+    const ov = document.getElementById('menuOverlay');
+
+    function toggleMenu() {
+        sn.classList.toggle('active');
+        ov.classList.toggle('active');
+    }
+
+    hb.onclick = (e) => { e.stopPropagation(); toggleMenu(); };
+    ov.onclick = toggleMenu;
+
+    /* Logic Brat */
+    async function generateBrat() {
+        const text = document.getElementById('inputText').value.trim();
+        const btn = document.getElementById('genBtn');
+        const img = document.getElementById('resultImg');
+        const resContainer = document.getElementById('resultContainer');
+        const loader = document.getElementById('loader');
+
+        if(!text) return alert('Ketik sesuatu dulu!');
+
+        btn.disabled = true;
+        loader.style.display = 'block';
+        resContainer.style.display = 'none';
+
+        // Menggunakan API Brat (Caliph)
+        const url = `https://brat.caliphdev.com/api/brat?text=${encodeURIComponent(text)}`;
+
+        // Kita langsung pasang URL ke src, ini paling aman biar bisa "Tekan Lama"
+        img.src = url;
+
+        img.onload = () => {
+            loader.style.display = 'none';
+            resContainer.style.display = 'block';
+            btn.disabled = false;
+        };
+
+        img.onerror = () => {
+            // Jika API 1 gagal, coba API cadangan
+            img.src = `https://aqul-brat.hf.space/?text=${encodeURIComponent(text)}`;
+            img.onload = () => {
+                loader.style.display = 'none';
+                resContainer.style.display = 'block';
+                btn.disabled = false;
+            };
+        };
+    }
+</script>
+
+</body>
+</html>

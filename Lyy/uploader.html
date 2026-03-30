@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploader - Ditcii Zephkiel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #007bff; --bg: #f4f7ff; --dark: #343a3f; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        /* Sidebar */
+        .hamburger-menu { position: fixed; top: 15px; left: 15px; z-index: 6000; background: white; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .side-nav { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: var(--dark); z-index: 5999; transition: 0.4s; padding-top: 80px; }
+        .side-nav.active { left: 0; }
+        .side-nav a { display: flex; align-items: center; gap: 15px; padding: 15px 25px; color: white; text-decoration: none; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 5998; }
+        .overlay.active { display: block; }
+
+        /* Card */
+        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 90%; max-width: 450px; text-align: center; }
+        .upload-area { border: 2px dashed #ddd; padding: 30px; border-radius: 15px; cursor: pointer; margin: 20px 0; background: #fafafa; }
+        .btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        .btn:disabled { background: #ccc; }
+        
+        #resultBox { margin-top: 25px; display: none; text-align: left; background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee; }
+        .url-text { font-size: 0.75rem; word-break: break-all; color: var(--primary); font-weight: 600; margin-bottom: 10px; display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="hamburger-menu" id="hamburgerBtn"><i class="fas fa-bars"></i></div>
+    <div class="overlay" id="menuOverlay"></div>
+
+    <nav class="side-nav" id="sideNav">
+        <h3 style="color:white; padding: 0 25px 20px;">Ditcii Menu</h3>
+        <a href="/index.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="/Zephkiel/ai.html"><i class="fas fa-robot"></i> Ditcii AI</a>
+        <a href="/Zephkiel/tiktok.html"><i class="fab fa-tiktok"></i> TikTok Downloader</a>
+        <a href="/Zephkiel/brat.html"><i class="fas fa-magic"></i> Brat Generator</a>
+        <a href="/Zephkiel/iqc.html"><i class="fab fa-apple"></i> iPhone Quote</a>
+        <a href="/Zephkiel/nsfw.html"><i class="fas fa-venus"></i> NSFW Random</a>
+        <a href="/Zephkiel/nikparse.html"><i class="fas fa-id-card"></i> NIK Checker</a>
+        <a href="/Zephkiel/anime.html"><i class="fas fa-film"></i> Anime Station</a>
+        <a href="/Zephkiel/nglspam.html"><i class="fas fa-rocket"></i> NGL Spammer</a>
+        <a href="/Zephkiel/tqto.html"><i class="fas fa-heart"></i> Thanks To</a>
+    </nav>
+
+    <div class="card">
+        <h2>Image Uploader</h2>
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-image fa-3x" style="color: #ccc;"></i>
+            <p id="fileName" style="margin-top:10px;">Pilih Gambar</p>
+            <input type="file" id="fileInput" hidden accept="image/*">
+        </div>
+        <button class="btn" id="upBtn" onclick="uploadSemua()">Upload Sekarang</button>
+        <p id="status" style="margin-top:15px; font-weight: 600; font-size: 0.9rem;"></p>
+
+        <div id="resultBox">
+            <label style="font-size: 0.7rem; color: #888;">HASIL URL (ImgBB):</label>
+            <span id="resImgbb" class="url-text">Menunggu...</span>
+            <button class="btn" style="background:#28a745; padding: 8px;" onclick="copy('resImgbb')">Salin Link</button>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar Logic
+        const hb=document.getElementById('hamburgerBtn'), sn=document.getElementById('sideNav'), ov=document.getElementById('menuOverlay');
+        hb.onclick=()=>{ sn.classList.add('active'); ov.classList.add('active'); };
+        ov.onclick=()=>{ sn.classList.remove('active'); ov.classList.remove('active'); };
+
+        document.getElementById('fileInput').onchange = function() {
+            if(this.files[0]) document.getElementById('fileName').innerText = this.files[0].name;
+        };
+
+        async function uploadSemua() {
+            const file = document.getElementById('fileInput').files[0];
+            if(!file) return alert("Pilih gambar dulu!");
+
+            const btn = document.getElementById('upBtn');
+            const st = document.getElementById('status');
+            btn.disabled = true;
+            st.innerText = "⏳ Sedang mengupload...";
+            st.style.color = "blue";
+            document.getElementById('resultBox').style.display = 'block';
+
+            // PAKAI API KEY IMGBB KAMU DI SINI
+            const apiKey = '2b16c493f9a65520224c2de0d808909e'; 
+            
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                // Upload ke ImgBB (Paling stabil di Web)
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                
+                if(data.success) {
+                    document.getElementById('resImgbb').innerText = data.data.url;
+                    st.innerText = "✅ Upload Berhasil!";
+                    st.style.color = "green";
+                } else { throw new Error(); }
+
+            } catch (err) {
+                st.innerText = "❌ Gagal. Cek API Key atau Koneksi.";
+                st.style.color = "red";
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function copy(id) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text);
+            alert("Berhasil disalin!");
+        }
+    </script>
+</body>
+</html>
