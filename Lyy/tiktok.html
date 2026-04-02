@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ditcii - TikTok Pro Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #fe2c55;
+            --primary-dark: #e0244a;
+            --dark: #121212;
+            --bg: #f8f9fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body { 
+            background: linear-gradient(135deg, #f6f9fc 0%, #eef2f7 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: white; padding: 15px 20px;
+            display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 100;
+        }
+        .menu-btn { font-size: 1.3rem; cursor: pointer; color: var(--dark); border: none; background: none; }
+        .nav-title { font-size: 1rem; font-weight: 700; color: var(--dark); }
+
+        .sidebar {
+            position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
+            background: white; box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+            transition: 0.3s; z-index: 1000; padding: 30px 20px;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar h3 { font-size: 1.2rem; margin-bottom: 30px; color: var(--dark); border-bottom: 2px solid #f0f2f5; padding-bottom: 10px; }
+        .sidebar a {
+            display: flex; align-items: center; gap: 15px; padding: 15px;
+            text-decoration: none; color: #444; font-weight: 600; border-radius: 12px;
+            margin-bottom: 8px; transition: 0.2s;
+        }
+        .sidebar a:hover { background: #f0f2f5; color: var(--primary); }
+        
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; }
+        .overlay.active { display: block; }
+
+        .card {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 40px 30px;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .brand-icon {
+            width: 70px; height: 70px; background: var(--dark); color: white;
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; font-size: 2rem; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        h2 { font-size: 1.5rem; color: var(--dark); margin-bottom: 25px; }
+
+        .input-box {
+            background: #f1f5f9; padding: 8px; border-radius: 20px;
+            display: flex; border: 2px solid transparent; transition: 0.3s;
+            margin-bottom: 25px;
+        }
+        .input-box:focus-within { border-color: var(--primary); background: white; }
+
+        input { flex: 1; border: none; background: transparent; padding: 12px; outline: none; }
+
+        .btn-dl {
+            background: var(--primary); color: white; border: none;
+            padding: 12px 24px; border-radius: 15px; cursor: pointer; font-weight: 600;
+        }
+
+        #result { display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
+
+        .preview-img { width: 100%; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+
+        .video-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 20px; display: block; text-align: left; }
+
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        
+        .action-btn {
+            padding: 14px; border-radius: 15px; border: none;
+            font-size: 0.85rem; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: 0.3s; color: white; text-decoration: none;
+        }
+        
+        .btn-video { background: var(--dark); }
+        .btn-music { background: #00d2ff; }
+        
+        .loader { display: none; margin: 20px 0; color: var(--primary); font-weight: 600; }
+        #status-dl { font-size: 12px; margin-top: 15px; color: var(--primary); font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+    <div class="nav-title">TikTok Downloader</div>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+<div class="sidebar" id="sidebar">
+    <h3>Ditcii Menu</h3>
+    <a href="/index.html"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="/Zephkiel/ai.html"><i class="fas fa-robot"></i> Ditcii AI</a>
+    <a href="/Zephkiel/brat.html"><i class="fas fa-magic"></i> Brat Generator</a>
+    <a href="/Zephkiel/iqc.html"><i class="fab fa-apple"></i> iPhone Quote</a>
+    <a href="/Zephkiel/uploader.html"><i class="fas fa-image"></i> Image To Url</a>
+    <a href="/Zephkiel/nikparse.html"><i class="fas fa-id-card"></i> NIK Checker</a>
+    <a href="/Zephkiel/anime.html"><i class="fas fa-film"></i> Anime Station</a>
+    <a href="/Zephkiel/nglspam.html"><i class="fas fa-rocket"></i> NGL Spammer</a>
+    <a href="/Zephkiel/tqto.html"><i class="fas fa-heart"></i> Thanks To</a>
+</div>
+
+<div class="card">
+    <div class="brand-icon"><i class="fab fa-tiktok"></i></div>
+    <h2>TikTok Downloader</h2>
+
+    <div class="input-box">
+        <input type="text" id="tiktokUrl" placeholder="Tempel link video di sini...">
+        <button class="btn-dl" onclick="startDownload()">Ambil</button>
+    </div>
+
+    <div id="loader" class="loader"><i class="fas fa-spinner fa-spin"></i> Memproses...</div>
+
+    <div id="result">
+        <span class="video-title" id="v-title"></span>
+        <img id="v-cover" class="preview-img" src="">
+        
+        <div class="btn-group">
+            <button id="btn-video" class="action-btn btn-video">
+                <i class="fas fa-video"></i> Simpan Video
+            </button>
+            <button id="btn-music" class="action-btn btn-music">
+                <i class="fas fa-music"></i> Simpan Audio
+            </button>
+        </div>
+        <p id="status-dl" style="display: none;"></p>
+    </div>
+</div>
+
+<script>
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function downloadFile(fileUrl) {
+        if (!fileUrl) return;
+        const status = document.getElementById('status-dl');
+        status.innerText = "Membuka file...";
+        status.style.display = "block";
+
+        // Membuka di tab baru agar browser menangani unduhan
+        window.open(fileUrl, '_blank');
+
+        setTimeout(() => { status.style.display = "none"; }, 3000);
+    }
+
+    async function startDownload() {
+        const urlInput = document.getElementById('tiktokUrl');
+        const url = urlInput.value.trim();
+        const loader = document.getElementById('loader');
+        const resultDiv = document.getElementById('result');
+
+        if (!url) return alert("Masukkan link TikTok!");
+
+        loader.style.display = "block";
+        resultDiv.style.display = "none";
+
+        try {
+            // Menggunakan proxy allorigins hanya untuk mengambil JSON data
+            const proxy = "https://api.allorigins.win/get?url=";
+            const targetApi = `https://www.tikwm.com/api/?url=${encodeURIComponent(url)}&hd=1`;
+            
+            const response = await fetch(proxy + encodeURIComponent(targetApi));
+            const json = await response.json();
+            const res = JSON.parse(json.contents);
+            
+            if (!res.data) throw new Error("Gagal mengambil data");
+
+            const data = res.data;
+            document.getElementById('v-title').innerText = data.title || "TikTok Video";
+            
+            // Perbaikan Logika Link (Cek apakah link sudah ada https atau belum)
+            const getLink = (path) => path.startsWith('http') ? path : "https://www.tikwm.com" + path;
+
+            document.getElementById('v-cover').src = getLink(data.cover);
+            
+            const videoLink = getLink(data.hdplay || data.play);
+            const musicLink = getLink(data.music);
+
+            document.getElementById('btn-video').onclick = () => downloadFile(videoLink);
+            document.getElementById('btn-music').onclick = () => downloadFile(musicLink);
+
+            resultDiv.style.display = "block";
+        } catch (err) {
+            console.error(err);
+            alert("Terjadi kesalahan. Pastikan link benar.");
+        } finally {
+            loader.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
