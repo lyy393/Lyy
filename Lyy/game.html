@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe - Main dengan Teman atau Robot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f0f1a;
+            color: #f1f5f9;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ========== BACKGROUND ANIMATION ========== */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-animation .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb-1 { width: 400px; height: 400px; background: #6366f1; top: -100px; left: -100px; animation-delay: 0s; }
+        .orb-2 { width: 300px; height: 300px; background: #f472b6; bottom: 10%; right: -50px; animation-delay: -5s; animation-duration: 25s; }
+        .orb-3 { width: 250px; height: 250px; background: #22d3ee; top: 40%; left: 30%; animation-delay: -10s; animation-duration: 30s; opacity: 0.15; }
+        .orb-4 { width: 350px; height: 350px; background: #4f46e5; bottom: -100px; left: 20%; animation-delay: -15s; animation-duration: 22s; opacity: 0.2; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed; top: 0; left: -320px; width: 320px; height: 100%;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(99, 102, 241, 0.15);
+            z-index: 9999; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding-top: 100px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .sidebar.active { left: 0; }
+
+        .sidebar-header {
+            padding: 0 30px 25px;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+            margin-bottom: 15px;
+        }
+
+        .sidebar-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem; font-weight: 700;
+            background: linear-gradient(135deg, #818cf8, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-header p {
+            font-size: 0.8rem; color: #64748b; margin-top: 4px;
+        }
+
+        .sidebar a {
+            padding: 14px 30px; display: flex; align-items: center; gap: 16px;
+            text-decoration: none; color: #94a3b8;
+            font-weight: 500; font-size: 0.95rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 3px solid transparent;
+            margin: 4px 12px; border-radius: 12px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: #ffffff;
+            border-left-color: #6366f1;
+            transform: translateX(4px);
+        }
+
+        .sidebar a i {
+            width: 24px; text-align: center;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+        }
+
+        .sidebar a:hover i { transform: scale(1.15); }
+
+        .sidebar a.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border-left-color: #6366f1;
+        }
+
+        /* ========== MENU TOGGLE ========== */
+        .menu-toggle {
+            position: fixed; top: 24px; left: 24px; z-index: 10000;
+            background: #1a1a2e;
+            width: 50px; height: 50px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            color: #818cf8; font-size: 1.3rem;
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-toggle:hover {
+            background: #252545;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            display: none; z-index: 9998;
+            transition: opacity 0.3s;
+        }
+
+        .overlay.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* ========== MAIN GAME CONTAINER ========== */
+        .game-wrapper {
+            position: relative;
+            z-index: 1;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(244, 114, 182, 0.2));
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 i {
+            color: #FFD700;
+            margin-right: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            color: #94a3b8;
+        }
+
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 30px;
+        }
+
+        .game-settings {
+            flex: 1;
+            min-width: 280px;
+            padding: 20px;
+            background: rgba(15, 15, 26, 0.6);
+            border-radius: 20px;
+            margin-right: 20px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .game-board {
+            flex: 1;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mode-selector {
+            margin-bottom: 25px;
+        }
+
+        .mode-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .mode-title i {
+            margin-right: 10px;
+            color: #818cf8;
+        }
+
+        .mode-options {
+            display: flex;
+            gap: 12px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            background: rgba(37, 37, 69, 0.8);
+            color: #94a3b8;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .mode-btn i {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: #f1f5f9;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .player-settings {
+            margin-bottom: 20px;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 14px;
+            border-radius: 14px;
+            background: rgba(37, 37, 69, 0.6);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .player-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-right: 14px;
+            font-weight: 700;
+        }
+
+        .player1 .player-icon {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+
+        .player2 .player-icon {
+            background: linear-gradient(135deg, #4ecdc4, #6ee7df);
+            color: white;
+        }
+
+        .player-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #f1f5f9;
+        }
+
+        .player-status {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .current-player {
+            box-shadow: 0 0 0 2px #FFD700, 0 5px 20px rgba(255, 215, 0, 0.15);
+            transform: scale(1.02);
+            background: rgba(37, 37, 69, 0.9);
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 12px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn i {
+            margin-right: 10px;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+        }
+
+        .start-btn:disabled {
+            background: #374151;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            color: #64748b;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 12px;
+            margin: 25px 0;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            background: rgba(37, 37, 69, 0.8);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            transition: all 0.3s ease;
+            color: #f1f5f9;
+            user-select: none;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .cell:hover:not(.taken) {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(37, 37, 69, 1);
+        }
+
+        .cell.x {
+            color: #ff6b6b;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .cell.o {
+            color: #4ecdc4;
+            text-shadow: 0 0 20px rgba(78, 205, 196, 0.4);
+        }
+
+        .cell.taken {
+            cursor: not-allowed;
+        }
+
+        .cell.winner {
+            animation: winnerPulse 1s ease infinite;
+        }
+
+        @keyframes winnerPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px 10px rgba(255, 215, 0, 0.2); }
+        }
+
+        .game-status {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 16px;
+            background: rgba(37, 37, 69, 0.6);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            width: 100%;
+            transition: all 0.3s ease;
+            color: #f1f5f9;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .game-status.win {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(243, 156, 18, 0.2));
+            color: #FFD700;
+            border-color: rgba(255, 215, 0, 0.3);
+            animation: statusPop 0.5s ease;
+        }
+
+        .game-status.draw {
+            background: linear-gradient(135deg, rgba(149, 165, 166, 0.2), rgba(127, 140, 141, 0.2));
+            color: #94a3b8;
+            border-color: rgba(149, 165, 166, 0.3);
+        }
+
+        @keyframes statusPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 320px;
+            margin-top: 20px;
+        }
+
+        .score {
+            flex: 1;
+            text-align: center;
+            padding: 14px;
+            border-radius: 16px;
+            background: rgba(37, 37, 69, 0.6);
+            margin: 0 8px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .score-title {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .score-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .player1-score .score-value {
+            color: #ff6b6b;
+        }
+
+        .player2-score .score-value {
+            color: #4ecdc4;
+        }
+
+        .difficulty-selector {
+            margin-top: 18px;
+            display: none;
+        }
+
+        .difficulty-selector.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .difficulty-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #f1f5f9;
+            font-weight: 600;
+        }
+
+        .difficulty-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .difficulty-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(37, 37, 69, 0.8);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .difficulty-btn:hover {
+            background: rgba(99, 102, 241, 0.15);
+            color: #f1f5f9;
+            transform: translateY(-2px);
+        }
+
+        .difficulty-btn.active {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+
+        .support-box {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0 30px 30px;
+        }
+
+        .support-btn {
+            padding: 12px 20px;
+            border-radius: 14px;
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.2);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .support-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,.3);
+        }
+
+        .whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+
+        .saweria {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(99, 102, 241, 0.1);
+            background: rgba(15, 15, 26, 0.4);
+        }
+
+        footer i {
+            color: #f472b6;
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px; height: 10px;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f0f1a; }
+        ::-webkit-scrollbar-thumb { background: #252545; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
+
+        @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+                padding: 20px;
+            }
+            .game-settings {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            .mode-options {
+                flex-direction: column;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .cell {
+                font-size: 2.8rem;
+            }
+            .game-wrapper {
+                padding: 80px 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+    </div>
+
+    <!-- Menu Toggle -->
+    <div class="menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="mySidebar">
+        <div class="sidebar-header">
+            <h3>Lyy Menu</h3>
+            <p>Tools & Features</p>
+        </div>
+        <a href="/index.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="/Lyy/ai.html"><i class="fas fa-robot"></i> Lyy AI</a>
+        <a href="/Lyy/brat.html"><i class="fas fa-magic"></i> Brat Generator</a>
+        <a href="/Lyy/iqc.html"><i class="fab fa-apple"></i> iPhone Quote</a>
+        <a href="/Lyy/uploader.html"><i class="fas fa-image"></i> Image To Url</a>
+        <a href="/Lyy/nsfw.html"><i class="fas fa-venus"></i> NSFW Random</a>
+        <a href="/Lyy/nikparse.html"><i class="fas fa-id-card"></i> NIK Checker</a>
+        <a href="/Lyy/anime.html"><i class="fas fa-film"></i> Anime Station</a>
+        <a href="/Lyy/tqto.html"><i class="fas fa-heart"></i> Thanks To</a>
+    </nav>
+
+    <div class="game-wrapper">
+        <div class="container">
+            <header>
+                <h1><i class="fas fa-gamepad"></i> Tic-Tac-Toe</h1>
+                <p class="subtitle">Main bersama teman atau tantang robot AI</p>
+            </header>
+
+            <div class="game-container">
+                <div class="game-settings">
+                    <div class="mode-selector">
+                        <h2 class="mode-title"><i class="fas fa-users"></i> Pilih Mode</h2>
+                        <div class="mode-options">
+                            <button class="mode-btn active" id="mode-friend">
+                                <i class="fas fa-user-friends"></i>
+                                <span>Lawan Teman</span>
+                            </button>
+                            <button class="mode-btn" id="mode-robot">
+                                <i class="fas fa-robot"></i>
+                                <span>Lawan Robot</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="player-settings">
+                        <div class="player-info player1 current-player">
+                            <div class="player-icon">X</div>
+                            <div>
+                                <div class="player-name">Pemain 1 (X)</div>
+                                <div class="player-status">Giliran saat ini</div>
+                            </div>
+                        </div>
+
+                        <div class="player-info player2">
+                            <div class="player-icon">O</div>
+                            <div>
+                                <div class="player-name" id="player2-name">Pemain 2 (O)</div>
+                                <div class="player-status">Menunggu giliran</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="difficulty-selector" id="difficulty-selector">
+                        <h3 class="difficulty-title">Tingkat Kesulitan Robot:</h3>
+                        <div class="difficulty-options">
+                            <button class="difficulty-btn active" data-level="easy">Mudah</button>
+                            <button class="difficulty-btn" data-level="medium">Sedang</button>
+                            <button class="difficulty-btn" data-level="hard">Sulit</button>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn start-btn" id="start-btn">
+                            <i class="fas fa-play"></i> Mulai Permainan
+                        </button>
+                        <button class="btn reset-btn" id="reset-btn">
+                            <i class="fas fa-redo"></i> Reset Permainan
+                        </button>
+                    </div>
+                </div>
+
+                <div class="game-board">
+                    <div class="game-status" id="game-status">
+                        Pilih mode dan klik "Mulai Permainan"
+                    </div>
+
+                    <div class="board" id="board">
+                        <!-- Cells created by JS -->
+                    </div>
+
+                    <div class="score-board">
+                        <div class="score player1-score">
+                            <div class="score-title">Pemain 1 (X)</div>
+                            <div class="score-value" id="score-x">0</div>
+                        </div>
+                        <div class="score ties-score">
+                            <div class="score-title">Seri</div>
+                            <div class="score-value" id="score-tie">0</div>
+                        </div>
+                        <div class="score player2-score">
+                            <div class="score-title" id="player2-score-title">Pemain 2 (O)</div>
+                            <div class="score-value" id="score-o">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="support-box">
+                <a href="https://whatsapp.com/channel/0029Vb6sIwaJf05ihQmIQ53v"
+                   target="_blank"
+                   class="support-btn whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                    Saluran WhatsApp
+                </a>
+
+                <a href="https://saweria.co/Lyytzy"
+                   target="_blank"
+                   class="support-btn saweria">
+                    <i class="fas fa-mug-hot"></i>
+                    Dukung di Saweria
+                </a>
+            </div>
+
+            <footer>
+                <p>Dibuat dengan <i class="fas fa-heart"></i> | Tic-Tac-Toe Game &copy; 2026</p>
+            </footer>
+        </div>
+    </div>
+
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <script>
+        // DOM Elements
+        const modeFriendBtn = document.getElementById('mode-friend');
+        const modeRobotBtn = document.getElementById('mode-robot');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const boardElement = document.getElementById('board');
+        const gameStatusElement = document.getElementById('game-status');
+        const player2NameElement = document.getElementById('player2-name');
+        const player2ScoreTitleElement = document.getElementById('player2-score-title');
+        const difficultySelector = document.getElementById('difficulty-selector');
+        const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+        const player1Element = document.querySelector('.player1');
+        const player2Element = document.querySelector('.player2');
+        const scoreXElement = document.getElementById('score-x');
+        const scoreOElement = document.getElementById('score-o');
+        const scoreTieElement = document.getElementById('score-tie');
+        const confettiContainer = document.getElementById('confetti-container');
+
+        // Game variables
+        let gameMode = 'friend';
+        let gameActive = false;
+        let currentPlayer = 'X';
+        let gameState = ['', '', '', '', '', '', '', '', ''];
+        let scores = { X: 0, O: 0, tie: 0 };
+        let difficulty = 'easy';
+
+        // Winning combinations
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        // Initialize board
+        function initializeBoard() {
+            boardElement.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.setAttribute('data-index', i);
+                cell.addEventListener('click', () => cellClicked(i));
+                boardElement.appendChild(cell);
+            }
+        }
+
+        initializeBoard();
+
+        // Set game mode
+        modeFriendBtn.addEventListener('click', () => setGameMode('friend'));
+        modeRobotBtn.addEventListener('click', () => setGameMode('robot'));
+
+        function setGameMode(mode) {
+            gameMode = mode;
+            modeFriendBtn.classList.toggle('active', mode === 'friend');
+            modeRobotBtn.classList.toggle('active', mode === 'robot');
+
+            if (mode === 'robot') {
+                player2NameElement.textContent = 'Robot (O)';
+                player2ScoreTitleElement.textContent = 'Robot (O)';
+                difficultySelector.classList.add('show');
+            } else {
+                player2NameElement.textContent = 'Pemain 2 (O)';
+                player2ScoreTitleElement.textContent = 'Pemain 2 (O)';
+                difficultySelector.classList.remove('show');
+            }
+
+            if (gameActive) resetGame();
+        }
+
+        // Set difficulty
+        difficultyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                difficultyButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                difficulty = btn.dataset.level;
+            });
+        });
+
+        // Start game
+        startBtn.addEventListener('click', startGame);
+
+        function startGame() {
+            if (gameActive) return;
+
+            gameActive = true;
+            gameState = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+
+            gameStatusElement.textContent = `Giliran ${currentPlayer}`;
+            gameStatusElement.className = 'game-status';
+            startBtn.disabled = true;
+            startBtn.innerHTML = '<i class="fas fa-pause"></i> Sedang Berjalan';
+
+            updatePlayerIndicator();
+            initializeBoard();
+
+            if (gameMode === 'robot' && currentPlayer === 'O') {
+                setTimeout(makeRobotMove, 500);
+            }
+        }
+
+        // Reset game
+        resetBtn.addEventListener('click', resetGame);
+
+        function resetGame() {
+            gameActive = false;
+            gameState = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+
+            gameStatusElement.textContent = 'Pilih mode dan klik "Mulai Permainan"';
+            gameStatusElement.className = 'game-status';
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fas fa-play"></i> Mulai Permainan';
+
+            updatePlayerIndicator();
+
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('x', 'o', 'taken', 'winner');
+            });
+        }
+
+        // Cell click handler
+        function cellClicked(cellIndex) {
+            if (!gameActive || gameState[cellIndex] !== '') return;
+
+            makeMove(cellIndex, currentPlayer);
+
+            if (gameActive) {
+                if (gameMode === 'robot' && currentPlayer === 'O') {
+                    setTimeout(makeRobotMove, 500);
+                }
+            }
+        }
+
+        // Make a move
+        function makeMove(cellIndex, player) {
+            gameState[cellIndex] = player;
+            const cell = document.querySelector(`.cell[data-index="${cellIndex}"]`);
+            cell.textContent = player;
+            cell.classList.add(player.toLowerCase(), 'taken');
+
+            if (checkWin()) {
+                handleWin(player);
+                return;
+            }
+
+            if (checkDraw()) {
+                handleDraw();
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            gameStatusElement.textContent = `Giliran ${currentPlayer}`;
+            updatePlayerIndicator();
+        }
+
+        // Check win
+        function checkWin() {
+            for (let condition of winningConditions) {
+                const [a, b, c] = condition;
+                if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+                    highlightWinningCells(condition);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Highlight winning cells
+        function highlightWinningCells(cells) {
+            cells.forEach(index => {
+                document.querySelector(`.cell[data-index="${index}"]`).classList.add('winner');
+            });
+        }
+
+        // Check draw
+        function checkDraw() {
+            return gameState.every(cell => cell !== '');
+        }
+
+        // Handle win
+        function handleWin(player) {
+            gameActive = false;
+            scores[player]++;
+            updateScores();
+
+            const winnerName = player === 'X' ? 'Pemain 1' : (gameMode === 'robot' ? 'Robot' : 'Pemain 2');
+            gameStatusElement.textContent = `${winnerName} Menang!`;
+            gameStatusElement.classList.add('win');
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fas fa-play"></i> Main Lagi';
+
+            createConfetti();
+        }
+
+        // Handle draw
+        function handleDraw() {
+            gameActive = false;
+            scores.tie++;
+            updateScores();
+
+            gameStatusElement.textContent = 'Permainan Seri!';
+            gameStatusElement.classList.add('draw');
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fas fa-play"></i> Main Lagi';
+        }
+
+        // Update scores display
+        function updateScores() {
+            scoreXElement.textContent = scores.X;
+            scoreOElement.textContent = scores.O;
+            scoreTieElement.textContent = scores.tie;
+        }
+
+        // Update player indicator
+        function updatePlayerIndicator() {
+            if (currentPlayer === 'X') {
+                player1Element.classList.add('current-player');
+                player2Element.classList.remove('current-player');
+                player1Element.querySelector('.player-status').textContent = 'Giliran saat ini';
+                player2Element.querySelector('.player-status').textContent = 'Menunggu giliran';
+            } else {
+                player1Element.classList.remove('current-player');
+                player2Element.classList.add('current-player');
+                player1Element.querySelector('.player-status').textContent = 'Menunggu giliran';
+                player2Element.querySelector('.player-status').textContent = 'Giliran saat ini';
+            }
+        }
+
+        // Robot AI
+        function makeRobotMove() {
+            if (!gameActive || currentPlayer !== 'O') return;
+
+            let cellIndex;
+
+            switch(difficulty) {
+                case 'easy':
+                    cellIndex = getRandomMove();
+                    break;
+                case 'medium':
+                    cellIndex = Math.random() < 0.5 ? getBestMove() : getRandomMove();
+                    break;
+                case 'hard':
+                    cellIndex = getBestMove();
+                    break;
+                default:
+                    cellIndex = getRandomMove();
+            }
+
+            makeMove(cellIndex, 'O');
+        }
+
+        // Get random available move
+        function getRandomMove() {
+            const availableCells = gameState.map((cell, index) => cell === '' ? index : null).filter(val => val !== null);
+            return availableCells[Math.floor(Math.random() * availableCells.length)];
+        }
+
+        // Get best move using minimax
+        function getBestMove() {
+            let bestScore = -Infinity;
+            let bestMove = 0;
+
+            for (let i = 0; i < 9; i++) {
+                if (gameState[i] === '') {
+                    gameState[i] = 'O';
+                    let score = minimax(gameState, 0, false);
+                    gameState[i] = '';
+
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = i;
+                    }
+                }
+            }
+
+            return bestMove;
+        }
+
+        // Minimax algorithm
+        function minimax(board, depth, isMaximizing) {
+            if (checkWinnerForMinimax('O')) return 10 - depth;
+            if (checkWinnerForMinimax('X')) return depth - 10;
+            if (board.every(cell => cell !== '')) return 0;
+
+            if (isMaximizing) {
+                let bestScore = -Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') {
+                        board[i] = 'O';
+                        let score = minimax(board, depth + 1, false);
+                        board[i] = '';
+                        bestScore = Math.max(score, bestScore);
+                    }
+                }
+                return bestScore;
+            } else {
+                let bestScore = Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') {
+                        board[i] = 'X';
+                        let score = minimax(board, depth + 1, true);
+                        board[i] = '';
+                        bestScore = Math.min(score, bestScore);
+                    }
+                }
+                return bestScore;
+            }
+        }
+
+        // Check winner for minimax
+        function checkWinnerForMinimax(player) {
+            for (let condition of winningConditions) {
+                const [a, b, c] = condition;
+                if (gameState[a] === player && gameState[b] === player && gameState[c] === player) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            confettiContainer.innerHTML = '';
+            const colors = ['#ff6b6b', '#4ecdc4', '#FFD700', '#f472b6', '#818cf8', '#6366f1'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confettiContainer.appendChild(confetti);
+            }
+
+            setTimeout(() => {
+                confettiContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById("mySidebar").classList.toggle("active");
+            document.querySelector(".overlay").classList.toggle("active");
+        }
+    </script>
+</body>
+</html>
